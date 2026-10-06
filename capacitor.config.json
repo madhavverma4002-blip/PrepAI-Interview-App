@@ -1,0 +1,12 @@
+{
+  "appId": "com.prepai.interviewapp",
+  "appName": "PrepAI",
+  "webDir": ".",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#070a12"
+    }
+  }
+}

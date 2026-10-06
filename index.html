@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PrepAI - AI Interviewer App</title>
+  
+  <!-- PWA App Manifest & Mobile Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#070a12">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PrepAI">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Design System Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="relative min-h-screen text-slate-100 selection:bg-cyan-500 selection:text-black pb-20 sm:pb-0">
+
+  <!-- Background Animated Glowing Orbs -->
+  <div class="bg-glow-1"></div>
+  <div class="bg-glow-2"></div>
+
+  <!-- Header Navigation Bar (App Header) -->
+  <header class="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/80 border-b border-white/10 px-4 lg:px-8 py-3 pt-safe">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center gap-3 cursor-pointer" id="navLogo">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <i data-lucide="bot" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <span class="text-xl font-extrabold tracking-tight font-heading gradient-text">PrepAI</span>
+          <span class="text-xs block text-slate-400 font-medium">Smart AI Interviewer</span>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation Tabs -->
+      <nav class="hidden sm:flex items-center gap-1 bg-slate-900/60 p-1.5 rounded-2xl border border-white/10 text-sm">
+        <button class="nav-tab active" data-target="viewHub">
+          <i data-lucide="layout-grid" class="w-4 h-4 inline-block mr-1.5"></i> Interview Hub
+        </button>
+        <button class="nav-tab" data-target="viewHistory">
+          <i data-lucide="history" class="w-4 h-4 inline-block mr-1.5"></i> History & Stats
+        </button>
+        <button class="nav-tab" data-target="viewSettings">
+          <i data-lucide="settings" class="w-4 h-4 inline-block mr-1.5"></i> Settings
+        </button>
+      </nav>
+
+      <!-- Install App CTA Button -->
+      <div class="flex items-center gap-2">
+        <button id="btnInstallPWA" class="hidden btn-primary py-1.5 px-3.5 text-xs rounded-xl flex items-center gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 shadow-emerald-500/20">
+          <i data-lucide="download" class="w-4 h-4"></i> Install App
+        </button>
+        <span class="hidden md:inline-flex text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1.5 rounded-full font-semibold items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> App Active
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Native Bottom Navigation Dock -->
+  <nav class="sm:hidden fixed bottom-0 left-0 right-0 z-50 backdrop-blur-2xl bg-slate-950/90 border-t border-white/10 px-6 py-2 pb-safe flex items-center justify-around">
+    <button class="mobile-nav-btn flex flex-col items-center gap-1 text-cyan-400 active" data-target="viewHub">
+      <i data-lucide="layout-grid" class="w-5 h-5"></i>
+      <span class="text-[10px] font-bold">Hub</span>
+    </button>
+    <button class="mobile-nav-btn flex flex-col items-center gap-1 text-slate-400" data-target="viewHistory">
+      <i data-lucide="history" class="w-5 h-5"></i>
+      <span class="text-[10px] font-bold">History</span>
+    </button>
+    <button class="mobile-nav-btn flex flex-col items-center gap-1 text-slate-400" data-target="viewSettings">
+      <i data-lucide="settings" class="w-5 h-5"></i>
+      <span class="text-[10px] font-bold">Settings</span>
+    </button>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 lg:px-8 py-6">
+
+    <!-- ================================================================= -->
+    <!-- VIEW 1: INTERVIEW HUB (Field & Role Selector) -->
+    <!-- ================================================================= -->
+    <section id="viewHub" class="space-y-8">
+      
+      <!-- Hero Header -->
+      <div class="text-center max-w-3xl mx-auto space-y-4">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Native PWA • Powered by Speech AI
+        </div>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold font-heading tracking-tight leading-tight">
+          Master Your Next Interview in <span class="gradient-text">Any Field</span>
+        </h1>
+        <p class="text-slate-400 text-sm sm:text-base md:text-lg">
+          Select your domain or type any custom job title. Practice voice interaction, real-time WPM metrics, filler word detection, and instant evaluation.
+        </p>
+
+        <!-- Custom Field Quick Search Input -->
+        <div class="pt-2 max-w-xl mx-auto relative">
+          <div class="relative flex items-center">
+            <i data-lucide="search" class="w-5 h-5 absolute left-4 text-slate-400"></i>
+            <input type="text" id="customRoleInput" placeholder="Type ANY Job Title (e.g. Quantum Computing Engineer, Pilot, Dental Assistant)..." 
+              class="w-full glass-input pl-12 pr-32 py-3.5 text-xs sm:text-sm md:text-base focus:border-cyan-400">
+            <button id="btnSelectCustomRole" class="btn-primary absolute right-2 py-2 px-4 text-xs md:text-sm">
+              Use Role <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Domain Selection Cards Grid -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg sm:text-xl font-bold font-heading text-slate-200 flex items-center gap-2">
+            <i data-lucide="compass" class="w-5 h-5 text-cyan-400"></i> Featured Career Fields
+          </h2>
+          <span class="text-xs text-slate-400">Select pre-built or custom role</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="domainCardsContainer">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Interview Configuration Options Panel -->
+      <div class="glass-panel p-6 space-y-6">
+        <h3 class="text-lg font-bold font-heading text-slate-200 flex items-center gap-2">
+          <i data-lucide="sliders" class="w-5 h-5 text-purple-400"></i> Configure Interview Parameters
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Experience Level -->
+          <div class="space-y-2">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-400 block">Experience Level</label>
+            <select id="selectLevel" class="w-full glass-input">
+              <option value="entry">Entry Level / Junior (0-2 Yrs)</option>
+              <option value="mid" selected>Mid Level (2-5 Yrs)</option>
+              <option value="senior">Senior / Lead (5+ Yrs)</option>
+              <option value="executive">Executive / Director</option>
+            </select>
+          </div>
+
+          <!-- Question Count -->
+          <div class="space-y-2">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-400 block">Number of Questions</label>
+            <select id="selectCount" class="w-full glass-input">
+              <option value="3">3 Questions (Quick Practice ~ 5 mins)</option>
+              <option value="5" selected>5 Questions (Standard ~ 10 mins)</option>
+              <option value="8">8 Questions (Deep Dive ~ 20 mins)</option>
+            </select>
+          </div>
+
+          <!-- Features Toggles -->
+          <div class="space-y-2">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-400 block">Audio & Video Mode</label>
+            <div class="flex items-center gap-4 pt-1">
+              <label class="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+                <input type="checkbox" id="toggleWebcam" checked class="w-4 h-4 accent-cyan-500 rounded">
+                <span>Webcam Preview</span>
+              </label>
+              <label class="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+                <input type="checkbox" id="toggleTTS" checked class="w-4 h-4 accent-purple-500 rounded">
+                <span>AI Voice Speech</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Voice Selection & Preview Customization Panel -->
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-white/10 space-y-4">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+              <i data-lucide="volume-2" class="w-4 h-4"></i> AI Interviewer Voice Customization
+            </span>
+            <button id="btnTestVoiceHub" class="btn-secondary py-1 px-3 text-xs text-cyan-300 hover:text-white border-cyan-500/30">
+              <i data-lucide="play-circle" class="w-3.5 h-3.5 text-cyan-400"></i> Test Voice Sound
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Voice Dropdown -->
+            <div class="space-y-1">
+              <label class="text-[11px] font-semibold text-slate-400 block">Voice Persona</label>
+              <select id="selectHubVoice" class="w-full glass-input text-xs py-2"></select>
+            </div>
+
+            <!-- Speech Speed Rate -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-[11px] font-semibold text-slate-400">
+                <span>Speech Speed</span>
+                <span id="rateValLabel" class="text-cyan-400 font-mono">1.0x</span>
+              </div>
+              <input type="range" id="inputSpeechRate" min="0.75" max="1.4" step="0.05" value="1.0" class="w-full accent-cyan-400 cursor-pointer">
+            </div>
+
+            <!-- Speech Pitch -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-[11px] font-semibold text-slate-400">
+                <span>Speech Tone / Pitch</span>
+                <span id="pitchValLabel" class="text-purple-400 font-mono">1.0x</span>
+              </div>
+              <input type="range" id="inputSpeechPitch" min="0.8" max="1.2" step="0.05" value="1.0" class="w-full accent-purple-400 cursor-pointer">
+            </div>
+          </div>
+        </div>
+
+        <!-- Selected Role Banner & Launch Button -->
+        <div class="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold" id="selectedRoleIcon">
+              <i data-lucide="code" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <span class="text-xs text-slate-400 block">Target Role</span>
+              <span class="text-base font-bold text-slate-100" id="selectedRoleTitle">Software Engineering</span>
+            </div>
+          </div>
+
+          <button id="btnStartInterview" class="btn-primary w-full sm:w-auto px-8 py-3.5 text-base">
+            <i data-lucide="play" class="w-5 h-5 fill-current"></i> Begin AI Interview
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VIEW 2: LIVE INTERVIEW CHAMBER -->
+    <!-- ================================================================= -->
+    <section id="viewChamber" class="hidden space-y-6">
+
+      <!-- Top Header Progress Bar -->
+      <div class="glass-panel p-4 flex items-center justify-between flex-wrap gap-4">
+        <div class="flex items-center gap-3">
+          <span class="badge-tag bg-cyan-500/20 text-cyan-400 border-cyan-500/30 font-bold" id="chamberRoleTag">Software Engineering</span>
+          <span class="text-xs text-slate-400 font-semibold" id="chamberProgressText">Question 1 of 5</span>
+        </div>
+
+        <!-- Timer & Hint Controls -->
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-1.5 text-amber-400 font-mono text-sm font-bold bg-amber-500/10 px-3 py-1 rounded-lg border border-amber-500/20">
+            <i data-lucide="clock" class="w-4 h-4"></i> <span id="timerDisplay">00:00</span>
+          </div>
+
+          <button id="btnGetHint" class="btn-secondary py-1.5 px-3 text-xs">
+            <i data-lucide="lightbulb" class="w-4 h-4 text-amber-400"></i> AI Hint
+          </button>
+
+          <button id="btnEndInterviewEarly" class="btn-danger py-1.5 px-3 text-xs">
+            <i data-lucide="square" class="w-4 h-4"></i> Exit
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Chamber Layout (2 Grid Columns) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Column (7 cols): AI Interviewer & Question -->
+        <div class="lg:col-span-7 space-y-6">
+
+          <!-- AI Interviewer Card -->
+          <div class="glass-panel p-6 text-center space-y-4">
+            
+            <!-- Animated AI Avatar -->
+            <div class="avatar-container" id="aiAvatarContainer">
+              <div class="avatar-pulse"></div>
+              <div class="w-24 h-24 rounded-full bg-slate-900 border-2 border-cyan-400/50 flex items-center justify-center z-10 shadow-xl">
+                <i data-lucide="bot" class="w-12 h-12 text-cyan-400" id="aiAvatarIcon"></i>
+              </div>
+            </div>
+
+            <!-- Avatar Status Indicator -->
+            <div class="space-y-1">
+              <div class="inline-flex items-center gap-2 text-xs font-bold px-3 py-1 rounded-full bg-slate-800 border border-white/10" id="aiStatusBadge">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                <span id="aiStatusText" class="text-cyan-400">AI is asking question...</span>
+              </div>
+            </div>
+
+            <!-- Audio Spectrum Waveform -->
+            <div class="px-4">
+              <canvas id="audioCanvas" width="400" height="50"></canvas>
+            </div>
+          </div>
+
+          <!-- Current Question Card -->
+          <div class="glass-panel p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-purple-400" id="questionCategory">Category: Fundamentals</span>
+              <button id="btnReplayTTS" class="text-xs text-slate-400 hover:text-cyan-400 flex items-center gap-1 transition">
+                <i data-lucide="volume-2" class="w-4 h-4"></i> Replay Question
+              </button>
+            </div>
+
+            <h3 class="text-lg md:text-xl font-bold font-heading text-slate-100 leading-snug" id="questionText">
+              Loading question...
+            </h3>
+
+            <!-- AI Hint Box (Hidden by default) -->
+            <div id="hintBox" class="hidden p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs space-y-1">
+              <span class="font-bold flex items-center gap-1"><i data-lucide="zap" class="w-3.5 h-3.5"></i> Interview Tip:</span>
+              <p id="hintText">Focus on technical accuracy and real-world application.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column (5 cols): Webcam & Answer Controls -->
+        <div class="lg:col-span-5 space-y-6">
+
+          <!-- Webcam Preview Window -->
+          <div class="glass-panel p-4 space-y-2" id="webcamPanel">
+            <div class="flex items-center justify-between text-xs text-slate-400">
+              <span class="flex items-center gap-1.5 font-semibold text-slate-300"><i data-lucide="camera" class="w-4 h-4 text-cyan-400"></i> Video Feed</span>
+              <span class="text-emerald-400 text-[10px] uppercase font-bold">Live</span>
+            </div>
+            <div class="webcam-frame">
+              <video id="webcamVideo" autoplay playsinline muted></video>
+              <div id="webcamFallback" class="absolute inset-0 flex items-center justify-center bg-slate-900 text-slate-500 text-xs">
+                Camera feed off
+              </div>
+            </div>
+          </div>
+
+          <!-- Answer & Speech Recording Area -->
+          <div class="glass-panel p-6 space-y-4">
+            
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Your Response</span>
+              
+              <!-- Real-time Speech Metrics Badges -->
+              <div class="flex items-center gap-2">
+                <span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg border border-white/10 font-mono" id="wpmBadge">0 WPM</span>
+                <span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg border border-white/10 font-mono" id="fillerBadge">0 Fillers</span>
+              </div>
+            </div>
+
+            <!-- Transcript Textarea -->
+            <textarea id="userAnswerInput" rows="5" placeholder="Click 'Start Speaking' or type your response here..." 
+              class="w-full glass-input text-sm leading-relaxed focus:border-cyan-400 resize-none"></textarea>
+
+            <!-- Microphone & Control Buttons -->
+            <div class="flex items-center gap-3">
+              <button id="btnMicToggle" class="btn-primary flex-1 py-3 justify-center text-sm">
+                <i data-lucide="mic" class="w-4 h-4" id="micBtnIcon"></i> <span id="micBtnText">Start Speaking</span>
+              </button>
+
+              <button id="btnSubmitAnswer" class="btn-secondary py-3 px-5 text-sm hover:border-emerald-500/50 hover:text-emerald-400">
+                <i data-lucide="check-circle" class="w-4 h-4"></i> Submit
+              </button>
+
+              <button id="btnSkipQuestion" class="btn-secondary py-3 px-3 text-xs text-slate-400 hover:text-slate-200" title="Skip question">
+                <i data-lucide="skip-forward" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VIEW 3: POST-INTERVIEW ANALYTICS DASHBOARD -->
+    <!-- ================================================================= -->
+    <section id="viewAnalytics" class="hidden space-y-8">
+      
+      <!-- Top Overview Card -->
+      <div class="glass-panel p-8 relative overflow-hidden space-y-6">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+          
+          <!-- Overall Grade & Verdict -->
+          <div class="space-y-2 text-center md:text-left">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block">Performance Summary</span>
+            <h2 class="text-3xl font-extrabold font-heading text-slate-100" id="reportGrade">Strong Hire (Outstanding)</h2>
+            <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
+              <span class="badge-tag bg-cyan-500/20 text-cyan-400 border-cyan-500/30" id="reportRole">Software Engineering</span>
+              <span class="badge-tag bg-purple-500/20 text-purple-400 border-purple-500/30" id="reportLevel">Mid Level</span>
+              <span class="badge-tag bg-slate-800 text-slate-300 border-white/10" id="reportDuration">Total Time: 04:20</span>
+            </div>
+          </div>
+
+          <!-- Circular Score Badge -->
+          <div class="flex items-center gap-6">
+            <div class="text-center">
+              <div class="relative inline-flex items-center justify-center">
+                <svg class="circle-chart" viewBox="0 0 36 36">
+                  <path class="text-slate-800" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path class="circle-chart__circle" stroke-dasharray="88, 100" stroke-width="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" id="scoreCirclePath" />
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                  <span class="text-3xl font-extrabold font-heading text-cyan-400" id="reportOverallScore">88</span>
+                  <span class="text-[10px] text-slate-400 font-bold uppercase">Score</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Action Bar -->
+        <div class="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
+          <button id="btnPrintReport" class="btn-primary py-2.5 px-5 text-sm">
+            <i data-lucide="printer" class="w-4 h-4"></i> Download / Print PDF Report
+          </button>
+          <button id="btnRetakeInterview" class="btn-secondary py-2.5 px-5 text-sm">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Practice Again
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 Core Sub-Scores Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Technical -->
+        <div class="glass-panel p-5 space-y-2">
+          <div class="flex items-center justify-between text-xs text-slate-400 font-bold">
+            <span>Technical Accuracy</span>
+            <i data-lucide="code" class="w-4 h-4 text-cyan-400"></i>
+          </div>
+          <div class="text-2xl font-bold font-heading text-slate-100" id="scoreTechnical">85/100</div>
+          <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+            <div class="bg-cyan-400 h-full rounded-full" id="barTechnical" style="width: 85%"></div>
+          </div>
+        </div>
+
+        <!-- Communication -->
+        <div class="glass-panel p-5 space-y-2">
+          <div class="flex items-center justify-between text-xs text-slate-400 font-bold">
+            <span>Communication & Structure</span>
+            <i data-lucide="message-square" class="w-4 h-4 text-purple-400"></i>
+          </div>
+          <div class="text-2xl font-bold font-heading text-slate-100" id="scoreCommunication">90/100</div>
+          <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+            <div class="bg-purple-400 h-full rounded-full" id="barCommunication" style="width: 90%"></div>
+          </div>
+        </div>
+
+        <!-- Problem Solving -->
+        <div class="glass-panel p-5 space-y-2">
+          <div class="flex items-center justify-between text-xs text-slate-400 font-bold">
+            <span>Problem Solving</span>
+            <i data-lucide="brain" class="w-4 h-4 text-pink-400"></i>
+          </div>
+          <div class="text-2xl font-bold font-heading text-slate-100" id="scoreProblemSolving">88/100</div>
+          <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+            <div class="bg-pink-400 h-full rounded-full" id="barProblemSolving" style="width: 88%"></div>
+          </div>
+        </div>
+
+        <!-- Delivery & Pace -->
+        <div class="glass-panel p-5 space-y-2">
+          <div class="flex items-center justify-between text-xs text-slate-400 font-bold">
+            <span>Delivery & Pace</span>
+            <i data-lucide="activity" class="w-4 h-4 text-emerald-400"></i>
+          </div>
+          <div class="text-2xl font-bold font-heading text-slate-100" id="scoreDelivery">92/100</div>
+          <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+            <div class="bg-emerald-400 h-full rounded-full" id="barDelivery" style="width: 92%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detailed Question-by-Question Breakdown -->
+      <div class="space-y-4">
+        <h3 class="text-xl font-bold font-heading text-slate-200 flex items-center gap-2">
+          <i data-lucide="list-checks" class="w-5 h-5 text-cyan-400"></i> Question-by-Question Deep Dive
+        </h3>
+
+        <div class="space-y-4" id="questionsBreakdownContainer">
+          <!-- Rendered dynamically via JS -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VIEW 4: PRACTICE HISTORY & STATS -->
+    <!-- ================================================================= -->
+    <section id="viewHistory" class="hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-bold font-heading text-slate-100">Practice History & Trends</h2>
+          <p class="text-sm text-slate-400">Track your interview progress and review previous sessions.</p>
+        </div>
+        <button id="btnClearHistory" class="btn-danger text-xs py-2 px-3">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear History
+        </button>
+      </div>
+
+      <!-- History List Container -->
+      <div class="space-y-3" id="historyListContainer">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VIEW 5: SETTINGS -->
+    <!-- ================================================================= -->
+    <section id="viewSettings" class="hidden space-y-6 max-w-2xl mx-auto">
+      <div class="glass-panel p-6 space-y-6">
+        <h2 class="text-xl font-bold font-heading text-slate-100 flex items-center gap-2">
+          <i data-lucide="sliders" class="w-5 h-5 text-purple-400"></i> App Settings & Integrations
+        </h2>
+
+        <!-- Gemini API Key Input -->
+        <div class="space-y-2">
+          <label class="text-xs font-bold uppercase tracking-wider text-slate-400 block">Google Gemini API Key (Optional)</label>
+          <input type="password" id="inputApiKey" placeholder="AIzaSy..." class="w-full glass-input text-sm">
+          <p class="text-xs text-slate-500">
+            Providing an API key enables real-time LLM-driven generative interview feedback. Leave blank to use our built-in offline smart NLP evaluation engine!
+          </p>
+        </div>
+
+        <!-- Voice Settings -->
+        <div class="space-y-4 pt-4 border-t border-white/10">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-slate-300">Speech Synthesis (AI Voice)</h3>
+            <button id="btnTestVoiceSettings" class="btn-secondary py-1 px-3 text-xs text-cyan-300 hover:text-white border-cyan-500/30">
+              <i data-lucide="play-circle" class="w-3.5 h-3.5 text-cyan-400"></i> Test Sound
+            </button>
+          </div>
+          
+          <div class="space-y-2">
+            <label class="text-xs text-slate-400 block">AI Voice Persona</label>
+            <select id="selectVoice" class="w-full glass-input text-xs"></select>
+          </div>
+        </div>
+
+        <button id="btnSaveSettings" class="btn-primary py-2.5 px-6 text-sm">
+          <i data-lucide="save" class="w-4 h-4"></i> Save Settings
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================================================================= -->
+  <!-- MODAL: Custom Field Generator -->
+  <!-- ================================================================= -->
+  <div id="customRoleModal" class="modal-overlay">
+    <div class="glass-panel p-6 max-w-md w-full space-y-4 modal-content">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-bold font-heading text-slate-100">Create Custom Job Interview</h3>
+        <button id="btnCloseModal" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="text-xs font-bold uppercase text-slate-400 block mb-1">Job Title / Specialty</label>
+          <input type="text" id="modalRoleInput" placeholder="e.g. Clinical Pharmacist, Solar Engineer" class="w-full glass-input text-sm">
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <button id="btnCancelModal" class="btn-secondary py-2 px-4 text-xs">Cancel</button>
+        <button id="btnConfirmCustomModal" class="btn-primary py-2 px-4 text-xs">Confirm Role</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Modules Loading -->
+  <script src="js/questionsData.js"></script>
+  <script src="js/speechEngine.js"></script>
+  <script src="js/evaluationEngine.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
